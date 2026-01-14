@@ -1,33 +1,48 @@
 'use client';
 import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { FieldSet, FieldGroup, Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { TitleAuth } from '@/components/ui/title-auth';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const [userValue, setUserValue] = useState('');
   const [passValue, setPassValue] = useState('');
 
-  const data = {
+  const loginData = {
     username: userValue,
     password: passValue,
   };
 
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const loginData = await fetch('http://localhost:3305/auth/login', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
-    const posts = await loginData.json();
-    console.log('data after login: ', posts);
+    try {
+      const result = await fetch('http://localhost:3305/auth/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+      const data = await result.json();
+      // console.log('data after login: ', data);
+
+      if (!result.ok) {
+        toast.error(data.message || 'Something went wrong');
+        return;
+      }
+      toast.success(data.message || 'Login successful');
+      router.push('/todo');
+    } catch (error) {
+      console.log('error: ', error);
+      toast.error('Cannot connect to server');
+    }
   };
 
   return (
