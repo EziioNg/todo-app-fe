@@ -22,11 +22,6 @@ export default function Home() {
             </Button>
             <Toggle />
           </div>
-          <Link href="/cars">
-            <Button variant="outline" className="text-cyan-500 cursor-pointer">
-              Go to Cars
-            </Button>
-          </Link>
           <Link href="/todo">
             <Button
               variant="outline"
@@ -43,16 +38,6 @@ export default function Home() {
           <Link href="/register">
             <Button variant="outline" className="text-blue-500 cursor-pointer">
               Go to Register
-            </Button>
-          </Link>
-          <Link href="/about">
-            <Button variant="outline" className="text-red-500 cursor-pointer">
-              Go to About
-            </Button>
-          </Link>
-          <Link href="/contact">
-            <Button variant="outline" className="text-blue-500 cursor-pointer">
-              Go to Contact
             </Button>
           </Link>
         </div>
