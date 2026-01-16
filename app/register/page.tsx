@@ -30,8 +30,9 @@ export default function Register() {
     console.log('userName: ', userValue);
     console.log('email: ', emailValue);
     console.log('passValue: ', passValue);
+
     try {
-      const result = await fetch('http://localhost:3305/auth/register', {
+      const result = await fetch('https://api.eziio.site/auth/register', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -54,9 +55,9 @@ export default function Register() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <div className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-100 dark:bg-zinc-800 font-sans transition-colors duration-300">
+      <div className="flex h-full max-h-150 w-full max-w-4xl flex-col items-center justify-between py-14 px-16 bg-white dark:bg-zinc-900 rounded-4xl shadow-sm dark:shadow-black/40 border border-zinc-200 dark:border-zinc-800 sm:items-start">
+        <div className="mx-auto w-full max-w-md">
           <form onSubmit={handleSubmit}>
             <FieldSet>
               <TitleAuth />
@@ -85,15 +86,15 @@ export default function Register() {
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <FieldDescription>
-                    Must be at least 8 characters long.
-                  </FieldDescription>
                   <Input
                     id="password1"
                     type="password"
-                    placeholder="some shits..."
+                    placeholder="something..."
                     onChange={(e) => setPassValue(e.currentTarget.value)}
                   />
+                  <FieldDescription>
+                    Must be at least 8 characters long.
+                  </FieldDescription>
                 </Field>
                 <Field orientation="horizontal">
                   <Button type="submit" className="cursor-pointer">

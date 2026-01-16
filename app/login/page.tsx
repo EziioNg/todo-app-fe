@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -7,7 +8,6 @@ import { Button } from '@/components/ui/button';
 import { FieldSet, FieldGroup, Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { TitleAuth } from '@/components/ui/title-auth';
-import { useRouter } from 'next/navigation';
 
 export default function Login() {
   const [userValue, setUserValue] = useState('');
@@ -22,7 +22,7 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const result = await fetch('http://localhost:3305/auth/login', {
+      const result = await fetch('https://api.eziio.site/auth/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -46,9 +46,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <div className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-zinc-100 dark:bg-zinc-800 font-sans transition-colors duration-300">
+      <div className="flex h-full max-h-150 w-full max-w-4xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-zinc-900 rounded-4xl shadow-sm dark:shadow-black/40 border border-zinc-200 dark:border-zinc-800 sm:items-start">
+        <div className="mx-auto w-full max-w-md">
           <form onSubmit={handleSubmit}>
             <FieldSet>
               <TitleAuth />
@@ -67,7 +67,7 @@ export default function Login() {
                   <Input
                     id="password"
                     type="password"
-                    placeholder="some shits..."
+                    placeholder="something..."
                     onChange={(e) => setPassValue(e.currentTarget.value)}
                   />
                 </Field>

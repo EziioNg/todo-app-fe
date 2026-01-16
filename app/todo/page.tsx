@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 'use client';
-
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Plus, X } from 'lucide-react';
@@ -8,7 +7,6 @@ import { motion, Reorder } from 'framer-motion';
 import { toast } from 'sonner';
 
 import { Checkbox } from '@/components/ui/checkbox';
-// import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Toggle } from '@/components/ui/toggle';
@@ -27,7 +25,7 @@ export default function Page() {
   const [todoList, setTodoList] = useState<Todo[]>([]);
 
   const fetchTodos = async () => {
-    const res = await fetch('http://localhost:3305/todos', {
+    const res = await fetch('https://api.eziio.site/todos', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -58,10 +56,6 @@ export default function Page() {
     fetchTodos();
   }, [loading, user]);
 
-  // useEffect(() => {
-  //   console.log('todo list updated: ', todoList);
-  // }, [todoList]);
-
   const handleSubmit = async () => {
     if (!inputTitle.trim()) return;
     if (!user) {
@@ -69,7 +63,7 @@ export default function Page() {
       return;
     }
     try {
-      const result = await fetch('http://localhost:3305/todos', {
+      const result = await fetch('https://api.eziio.site/todos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -111,7 +105,7 @@ export default function Page() {
     );
 
     try {
-      const result = await fetch(`http://localhost:3305/todos/${id}`, {
+      const result = await fetch(`https://api.eziio.site/todos/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +140,7 @@ export default function Page() {
     }
 
     try {
-      const result = await fetch(`http://localhost:3305/todos/${id}`, {
+      const result = await fetch(`https://api.eziio.site/todos/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -191,7 +185,7 @@ export default function Page() {
     }
 
     try {
-      const result = await fetch(`http://localhost:3305/todos/${id}`, {
+      const result = await fetch(`https://api.eziio.site/todos/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });
@@ -221,7 +215,7 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center bg-zinc-100 dark:bg-zinc-800 font-sans transition-colors duration-300">
+    <div className="flex min-h-screen h-screen items-center justify-center bg-zinc-100 dark:bg-zinc-800 font-sans transition-colors duration-300">
       <main className="flex flex-col gap-4 overflow-y-auto h-full max-h-150 w-full max-w-4xl items-center py-16 px-50 bg-white dark:bg-zinc-900 rounded-4xl shadow-sm dark:shadow-black/40 border border-zinc-200 dark:border-zinc-800">
         <div className="w-full flex flex-row justify-between scroll-m-20 pb-2 text-3xl font-bold tracking-tight first:mt-0">
           {user ? (
