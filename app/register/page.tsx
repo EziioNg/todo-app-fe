@@ -109,7 +109,7 @@ export default function Register() {
                     onChange={(e) => setPassValue(e.currentTarget.value)}
                   />
                   <FieldDescription>
-                    Must be at least 8 characters long.
+                    Must be at least 6 characters long.
                   </FieldDescription>
                 </Field>
                 <Field orientation="horizontal">
