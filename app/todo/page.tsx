@@ -48,7 +48,7 @@ export default function Page() {
   useEffect(() => {
     if (loading) return;
     if (!user) {
-      toast.message('You havent logged in');
+      toast.message('You are not logged in');
       return;
     }
     // console.log('loading:', loading);
@@ -135,7 +135,7 @@ export default function Page() {
   const handleUpdateTitle = async (id: number) => {
     if (!editingValue.trim()) return;
     if (!user) {
-      toast.error('You have to login first to perform this action');
+      toast.error('Please login first before attempting this action');
       return;
     }
 
@@ -260,7 +260,7 @@ export default function Page() {
         >
           {!user ? (
             <p className="text-muted-foreground text-center">
-              You should login first before creating todos
+              Please login first before creating todos
             </p>
           ) : todoList.length === 0 ? (
             <p className="text-muted-foreground text-center">

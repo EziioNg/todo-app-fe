@@ -1,5 +1,6 @@
 {
   "name": "my-todo",
+  "author": "Eziio",
   "version": "0.1.0",
   "private": true,
   "scripts": {
