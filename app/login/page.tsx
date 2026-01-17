@@ -5,7 +5,13 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { FieldSet, FieldGroup, Field, FieldLabel } from '@/components/ui/field';
+import {
+  FieldSet,
+  FieldGroup,
+  Field,
+  FieldLabel,
+  FieldDescription,
+} from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { TitleAuth } from '@/components/ui/title-auth';
 
@@ -77,6 +83,9 @@ export default function Login() {
                     onChange={(e) => setPassValue(e.currentTarget.value)}
                   />
                 </Field>
+                <FieldDescription>
+                  Hint: UserA/UserB - Password: 123456
+                </FieldDescription>
                 <Field orientation="horizontal">
                   <Button type="submit" className="cursor-pointer">
                     Submit
