@@ -27,9 +27,25 @@ export default function Register() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('userName: ', userValue);
-    console.log('email: ', emailValue);
-    console.log('passValue: ', passValue);
+    // console.log('userName: ', userValue);
+    // console.log('email: ', emailValue);
+    // console.log('passValue: ', passValue);
+
+    if (!userValue.trim() || !emailValue.trim() || !passValue.trim()) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailValue.trim())) {
+      toast.error('Invalid email address');
+      return;
+    }
+
+    if (passValue.trim().length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
 
     try {
       const result = await fetch('https://api.eziio.site/auth/register', {
@@ -79,7 +95,7 @@ export default function Register() {
                   <Input
                     id="email"
                     type="text"
-                    placeholder="Eziio@gmail.com"
+                    placeholder="fakeEmail123@gmail.com"
                     onChange={(e) => setEmailValue(e.currentTarget.value)}
                   />
                   <FieldDescription>Enter your Email.</FieldDescription>
@@ -87,7 +103,7 @@ export default function Register() {
                 <Field>
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                   <Input
-                    id="password1"
+                    id="password"
                     type="password"
                     placeholder="something..."
                     onChange={(e) => setPassValue(e.currentTarget.value)}

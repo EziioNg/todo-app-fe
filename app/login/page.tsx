@@ -21,6 +21,17 @@ export default function Login() {
   const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!userValue.trim() || !passValue.trim()) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (passValue.trim().length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
     try {
       const result = await fetch('https://api.eziio.site/auth/login', {
         method: 'POST',
