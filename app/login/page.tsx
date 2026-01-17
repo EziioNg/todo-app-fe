@@ -27,11 +27,6 @@ export default function Login() {
       return;
     }
 
-    if (passValue.trim().length < 6) {
-      toast.error('Password must be at least 6 characters');
-      return;
-    }
-
     try {
       const result = await fetch('https://api.eziio.site/auth/login', {
         method: 'POST',
