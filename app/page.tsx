@@ -20,7 +20,7 @@ export default function Home() {
 
           <Link href="/todo">
             <Button size="lg" className="mt-4 px-8 cursor-pointer">
-              Go to Todo
+              Go to Todos
             </Button>
           </Link>
 

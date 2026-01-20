@@ -219,9 +219,9 @@ export default function Page() {
       <main className="flex flex-col gap-4 overflow-y-auto h-full max-h-150 w-full max-w-4xl items-center py-16 px-50 bg-white dark:bg-zinc-900 rounded-4xl shadow-sm dark:shadow-black/40 border border-zinc-200 dark:border-zinc-800">
         <div className="w-full flex flex-row justify-between scroll-m-20 pb-2 text-3xl font-bold tracking-tight first:mt-0">
           {user ? (
-            <h1>{user?.username} Todos: </h1>
+            <h1>{user?.username} Tasks: </h1>
           ) : (
-            <h1>Your Todos will be listed here</h1>
+            <h1>Your Tasks will be listed here</h1>
           )}
           <Toggle />
         </div>
@@ -260,11 +260,11 @@ export default function Page() {
         >
           {!user ? (
             <p className="text-muted-foreground text-center">
-              Please login first before creating todos
+              Please login first before creating tasks!
             </p>
           ) : todoList.length === 0 ? (
             <p className="text-muted-foreground text-center">
-              You don’t have any todos yet
+              You don’t have any tasks...
             </p>
           ) : (
             todoList.map((todo) => {
