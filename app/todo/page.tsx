@@ -215,7 +215,7 @@ export default function Page() {
   };
 
   return (
-    <div className="flex min-h-screen h-screen items-center justify-center bg-zinc-100 dark:bg-zinc-800 font-sans transition-colors duration-300">
+    <div className="flex min-h-screen h-screen items-center justify-center font-sans transition-colors duration-300">
       <main className="flex flex-col gap-4 overflow-y-auto h-full max-h-150 w-full max-w-4xl items-center py-16 px-50 bg-white dark:bg-zinc-900 rounded-4xl shadow-sm dark:shadow-black/40 border border-zinc-200 dark:border-zinc-800">
         <div className="w-full flex flex-row justify-between scroll-m-20 pb-2 text-3xl font-bold tracking-tight first:mt-0">
           {user ? (

@@ -58,7 +58,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-100 dark:bg-zinc-800 font-sans transition-colors duration-300">
+    <div className="flex min-h-screen items-center justify-center font-sans transition-colors duration-300">
       <div className="flex h-full max-h-150 w-full max-w-4xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-zinc-900 rounded-4xl shadow-sm dark:shadow-black/40 border border-zinc-200 dark:border-zinc-800 sm:items-start">
         <div className="mx-auto w-full max-w-md">
           <form onSubmit={handleSubmit}>
