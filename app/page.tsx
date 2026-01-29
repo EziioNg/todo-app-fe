@@ -4,7 +4,7 @@ import { Toggle } from '@/components/ui/toggle';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-100 dark:bg-zinc-800 transition-colors">
+    <div className="flex min-h-screen items-center justify-center transition-colors">
       <main className="relative w-full max-w-xl rounded-3xl bg-white dark:bg-zinc-900 p-10 shadow-sm border border-zinc-200 dark:border-zinc-800">
         <div className="absolute top-4 right-4">
           <Toggle />
