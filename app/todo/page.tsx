@@ -208,7 +208,7 @@ export default function Page() {
     try {
       await logout();
       toast.success('Logout successful');
-      router.push('/login');
+      router.replace('/login');
     } catch {
       toast.error('Logout failed');
     }
