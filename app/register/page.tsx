@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -14,21 +14,12 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { TitleAuth } from '@/components/ui/title-auth';
-import { useAuth } from '@/providers/auth-provider';
 
 export default function Register() {
   const [userValue, setUserValue] = useState('');
   const [emailValue, setEmailValue] = useState('');
   const [passValue, setPassValue] = useState('');
   const router = useRouter();
-
-  const { user } = useAuth();
-  useEffect(() => {
-    if (user) {
-      router.push('/');
-      toast.error('You are already logged in');
-    }
-  }, [router, user]);
 
   const registerData = {
     username: userValue,
@@ -75,6 +66,7 @@ export default function Register() {
         return;
       }
       toast.success(data.message || 'Register successful');
+      router.replace('/');
     } catch (error) {
       console.log('error: ', error);
       toast.error('Cannot connect to server');

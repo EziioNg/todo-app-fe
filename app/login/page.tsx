@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -21,13 +21,7 @@ export default function Login() {
   const [passValue, setPassValue] = useState('');
   const router = useRouter();
 
-  const { user } = useAuth();
-  useEffect(() => {
-    if (user) {
-      router.push('/');
-      toast.error('You are already logged in');
-    }
-  }, [router, user]);
+  const { refetchUser } = useAuth();
 
   const loginData = {
     username: userValue,
@@ -43,7 +37,7 @@ export default function Login() {
     }
 
     try {
-      // const result = await fetch('http://localhost:3305/auth/login', {
+      // const result = await fetch('https://api.eziio.site/auth/login', {
       const result = await fetch('https://api.eziio.site/auth/login', {
         method: 'POST',
         credentials: 'include',
@@ -60,7 +54,9 @@ export default function Login() {
         return;
       }
       toast.success(data.message || 'Login successful');
-      router.push('/todo');
+
+      await refetchUser();
+      router.replace('/todo');
     } catch (error) {
       console.log('error: ', error);
       toast.error('Cannot connect to server');
