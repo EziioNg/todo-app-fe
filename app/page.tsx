@@ -1,8 +1,15 @@
+'use client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Toggle } from '@/components/ui/toggle';
+import { useAuth } from '@/providers/auth-provider';
+import { toast } from 'sonner';
 
 export default function Home() {
+  const { user } = useAuth();
+  const router = useRouter();
+
   return (
     <div className="flex min-h-screen items-center justify-center transition-colors">
       <main className="relative w-full max-w-xl rounded-3xl bg-white dark:bg-zinc-900 p-10 shadow-sm border border-zinc-200 dark:border-zinc-800">
@@ -25,7 +32,7 @@ export default function Home() {
           </Link>
 
           <div className="flex gap-4 mt-2 text-sm">
-            <Link href="/login">
+            {/* <Link href="/login">
               <Button variant="outline" className="cursor-pointer">
                 Login
               </Button>
@@ -34,7 +41,27 @@ export default function Home() {
               <Button variant="outline" className="cursor-pointer">
                 Register
               </Button>
-            </Link>
+            </Link> */}
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              onClick={() => {
+                if (user) return toast.error('You are already logged in');
+                router.push('/login');
+              }}
+            >
+              Login
+            </Button>
+            <Button
+              variant="outline"
+              className="cursor-pointer"
+              onClick={() => {
+                if (user) return toast.error('You are already logged in');
+                router.push('/register');
+              }}
+            >
+              Register
+            </Button>
           </div>
         </div>
       </main>
