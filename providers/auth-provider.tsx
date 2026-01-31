@@ -28,6 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchMe = async () => {
     try {
+      // const res = await fetch('http://localhost:3305/auth/me', {
       const res = await fetch('https://api.eziio.site/auth/me', {
         credentials: 'include',
       });

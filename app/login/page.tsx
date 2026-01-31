@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -14,17 +14,26 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { TitleAuth } from '@/components/ui/title-auth';
+import { useAuth } from '@/providers/auth-provider';
 
 export default function Login() {
   const [userValue, setUserValue] = useState('');
   const [passValue, setPassValue] = useState('');
+  const router = useRouter();
+
+  const { user } = useAuth();
+  useEffect(() => {
+    if (user) {
+      router.push('/');
+      toast.error('You are already logged in');
+    }
+  }, [router, user]);
 
   const loginData = {
     username: userValue,
     password: passValue,
   };
 
-  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -34,6 +43,7 @@ export default function Login() {
     }
 
     try {
+      // const result = await fetch('http://localhost:3305/auth/login', {
       const result = await fetch('https://api.eziio.site/auth/login', {
         method: 'POST',
         credentials: 'include',
