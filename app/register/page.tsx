@@ -50,7 +50,7 @@ export default function Register() {
     }
 
     try {
-      const result = await fetch('https://api.eziio.site/auth/register', {
+      const result = await fetch('https://api.todo.eziio.site/auth/register', {
         method: 'POST',
         credentials: 'include',
         headers: {

@@ -28,7 +28,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchMe = async () => {
     try {
-      const res = await fetch('https://api.eziio.site/auth/me', {
+      const res = await fetch('https://api.todo.eziio.site/auth/me', {
         credentials: 'include',
       });
 
@@ -48,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await fetch('https://api.eziio.site/auth/logout', {
+    await fetch('https://api.todo.eziio.site/auth/logout', {
       method: 'POST',
       credentials: 'include',
     });

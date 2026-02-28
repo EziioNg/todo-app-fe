@@ -25,7 +25,7 @@ export default function Page() {
   const [todoList, setTodoList] = useState<Todo[]>([]);
 
   const fetchTodos = async () => {
-    const res = await fetch('https://api.eziio.site/todos', {
+    const res = await fetch('https://api.todo.eziio.site/todos', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ export default function Page() {
       return;
     }
     try {
-      const result = await fetch('https://api.eziio.site/todos', {
+      const result = await fetch('https://api.todo.eziio.site/todos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ export default function Page() {
     );
 
     try {
-      const result = await fetch(`https://api.eziio.site/todos/${id}`, {
+      const result = await fetch(`https://api.todo.eziio.site/todos/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -140,7 +140,7 @@ export default function Page() {
     }
 
     try {
-      const result = await fetch(`https://api.eziio.site/todos/${id}`, {
+      const result = await fetch(`https://api.todo.eziio.site/todos/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -185,7 +185,7 @@ export default function Page() {
     }
 
     try {
-      const result = await fetch(`https://api.eziio.site/todos/${id}`, {
+      const result = await fetch(`https://api.todo.eziio.site/todos/${id}`, {
         method: 'DELETE',
         credentials: 'include',
       });

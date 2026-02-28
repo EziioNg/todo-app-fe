@@ -37,8 +37,7 @@ export default function Login() {
     }
 
     try {
-      // const result = await fetch('https://api.eziio.site/auth/login', {
-      const result = await fetch('https://api.eziio.site/auth/login', {
+      const result = await fetch('https://api.todo.eziio.site/auth/login', {
         method: 'POST',
         credentials: 'include',
         headers: {
