@@ -2,22 +2,27 @@
 import {
   createContext,
   useContext,
-  useEffect,
   useState,
   ReactNode,
+  useEffect,
 } from 'react';
+
+import axiosInstance from '@/lib/axios';
 
 type User = {
   id: string;
   email: string;
   username?: string;
+  role?: string;
 };
 
 type AuthContextType = {
   user: User | null;
   loading: boolean;
-  refetchUser: () => Promise<void>;
+  isAdmin: boolean;
+  login: (user: User) => void;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -26,47 +31,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchMe = async () => {
+  const refreshUser = async () => {
     try {
-      const res = await fetch('https://api.todo.eziio.site/auth/me', {
-        credentials: 'include',
+      const res = await axiosInstance.get('/auth/me', {
+        skipAuthRefresh: true,
       });
 
-      if (!res.ok) {
-        setUser(null);
-        return;
-      }
-
-      const result = await res.json();
-      setUser(result.data);
-    } catch (error) {
+      setUser(res.data.data);
+    } catch {
       setUser(null);
-      console.log('error: ', error);
     } finally {
       setLoading(false);
     }
   };
 
+  useEffect(() => {
+    refreshUser();
+  }, []);
+
+  const login = (user: User) => {
+    setUser(user);
+  };
+
   const logout = async () => {
-    await fetch('https://api.todo.eziio.site/auth/logout', {
-      method: 'POST',
-      credentials: 'include',
-    });
+    try {
+      await axiosInstance.post('/auth/logout');
+    } catch (error) {
+      console.log('Logout failed: ', error);
+    }
 
     setUser(null);
   };
 
-  useEffect(() => {
-    fetchMe();
-  }, []);
+  const isAdmin = user?.role === 'admin';
 
   return (
     <AuthContext.Provider
       value={{
         user,
         loading,
-        refetchUser: fetchMe,
+        isAdmin,
+        login,
         logout,
+        refreshUser,
       }}
     >
       {children}

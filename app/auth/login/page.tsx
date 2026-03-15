@@ -14,14 +14,14 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { TitleAuth } from '@/components/ui/title-auth';
+import axiosInstance from '@/lib/axios';
 import { useAuth } from '@/providers/auth-provider';
 
 export default function Login() {
   const [userValue, setUserValue] = useState('');
   const [passValue, setPassValue] = useState('');
+  const { login } = useAuth();
   const router = useRouter();
-
-  const { refetchUser } = useAuth();
 
   const loginData = {
     username: userValue,
@@ -37,28 +37,21 @@ export default function Login() {
     }
 
     try {
-      const result = await fetch('https://api.todo.eziio.site/auth/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(loginData),
-      });
-      const data = await result.json();
-      // console.log('data after login: ', data);
-
-      if (!result.ok) {
-        toast.error(data.message || 'Something went wrong');
-        return;
-      }
+      const result = await axiosInstance.post('/auth/login', loginData);
+      const data = result.data;
       toast.success(data.message || 'Login successful');
 
-      await refetchUser();
-      router.replace('/todo');
+      const user = result.data.data;
+      login(user);
+
+      const userRole = user.role;
+      if (userRole === 'admin') {
+        router.replace('/admin');
+      } else {
+        router.replace('/employee/todo');
+      }
     } catch (error) {
-      console.log('error: ', error);
-      toast.error('Cannot connect to server');
+      console.log(error);
     }
   };
 
@@ -88,8 +81,36 @@ export default function Login() {
                     onChange={(e) => setPassValue(e.currentTarget.value)}
                   />
                 </Field>
-                <FieldDescription>
-                  Hint: UserA/UserB - Password: 123456
+                <FieldDescription className="mt-2">
+                  <span className="flex flex-col gap-2">
+                    <span className="font-medium text-muted-foreground">
+                      Demo Accounts
+                    </span>
+
+                    <span className="flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        Admin1
+                        <span className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] text-red-600">
+                          Admin
+                        </span>
+                      </span>
+                      <span className="text-muted-foreground">
+                        Password: Aa@123456
+                      </span>
+                    </span>
+
+                    <span className="flex items-center justify-between">
+                      <span className="flex items-center gap-2">
+                        Employee1
+                        <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-600">
+                          Employee
+                        </span>
+                      </span>
+                      <span className="text-muted-foreground">
+                        Password: Aa@123456
+                      </span>
+                    </span>
+                  </span>
                 </FieldDescription>
                 <Field orientation="horizontal">
                   <Button type="submit" className="cursor-pointer">

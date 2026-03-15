@@ -50,7 +50,8 @@ export default function Register() {
     }
 
     try {
-      const result = await fetch('https://api.todo.eziio.site/auth/register', {
+      // const result = await fetch('https://api.todo.eziio.site/auth/register', {
+      const result = await fetch('http://localhost:3305/auth/register', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -98,10 +99,12 @@ export default function Register() {
                   <Input
                     id="email"
                     type="text"
-                    placeholder="fakeEmail123@gmail.com"
+                    placeholder="Email123@gmail.com"
                     onChange={(e) => setEmailValue(e.currentTarget.value)}
                   />
-                  <FieldDescription>Enter your Email.</FieldDescription>
+                  <FieldDescription>
+                    We will send a verification mail to this email.
+                  </FieldDescription>
                 </Field>
                 <Field>
                   <FieldLabel htmlFor="password">Password</FieldLabel>
