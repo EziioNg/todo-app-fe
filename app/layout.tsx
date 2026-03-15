@@ -5,6 +5,7 @@ import { AuthProvider } from '@/providers/auth-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import ParticleBackground from '@/components/particle-background';
+import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['vietnamese'] });
 
@@ -21,7 +22,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           >
             <ParticleBackground />
             <div className="relative z-10 min-h-screen">
-              <AuthProvider>{children}</AuthProvider>
+              <AuthProvider>
+                <Suspense>{children}</Suspense>
+              </AuthProvider>
             </div>
           </ThemeProvider>
           <Toaster />
