@@ -6,11 +6,11 @@ export function TitleAuth() {
   const pathName = usePathname();
   let title = 'Hello! - Welcome!';
 
-  if (pathName === '/login') {
+  if (pathName === '/auth/login') {
     title = 'Welcome back!';
   }
 
-  if (pathName === '/register') {
+  if (pathName === '/auth/register') {
     title = 'Create your account!';
   }
 
