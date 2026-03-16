@@ -20,6 +20,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   isAdmin: boolean;
+  isEmployee: boolean;
   login: (user: User) => void;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -64,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const isAdmin = user?.role === 'admin';
+  const isEmployee = user?.role === 'employee';
 
   return (
     <AuthContext.Provider
@@ -71,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         loading,
         isAdmin,
+        isEmployee,
         login,
         logout,
         refreshUser,
