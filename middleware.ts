@@ -8,15 +8,13 @@ export function middleware(request: NextRequest) {
 
   const isProtectedRoute =
     pathname.startsWith('/employee') || pathname.startsWith('/admin');
-
-  const isAuthRoute = pathname.startsWith('/auth');
-
   if (isProtectedRoute && !token) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
+  const isAuthRoute = pathname.startsWith('/auth');
   if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL('/employee/todo', request.url));
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
   return NextResponse.next();

@@ -24,7 +24,7 @@ import CreateEmployeeModal from '@/components/modals/create-employee-modal';
 import CreateTaskModal from '@/components/modals/create-task-modal';
 import MessageSection from '@/components/message-section';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { useRouter, redirect } from 'next/navigation';
 import axiosInstance from '@/lib/axios';
 import { useAuth } from '@/providers/auth-provider';
 
@@ -74,7 +74,7 @@ export default function AdminPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { logout } = useAuth();
+  const { isAdmin, logout } = useAuth();
 
   const fetchEmployees = async () => {
     try {
@@ -102,8 +102,11 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
+    if (!isAdmin) {
+      redirect('/');
+    }
     fetchEmployees();
-  }, []);
+  }, [isAdmin]);
 
   const menuItems = [
     { id: 'users', label: 'Manage Users', icon: Users },

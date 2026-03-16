@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { motion, Reorder } from 'framer-motion';
 import { toast } from 'sonner';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
@@ -22,7 +22,7 @@ type UserSection = 'todos' | 'messages';
 
 export default function UserTodoPage() {
   const router = useRouter();
-  const { user, logout } = useAuth();
+  const { user, logout, isEmployee } = useAuth();
   const [activeSection, setActiveSection] = useState<UserSection>('todos');
   const [inputTitle, setInputTitle] = useState('');
   const [todoList, setTodoList] = useState<Todo[]>([]);
@@ -49,8 +49,11 @@ export default function UserTodoPage() {
   };
 
   useEffect(() => {
+    if (!isEmployee) {
+      redirect('/');
+    }
     fetchTodos();
-  }, []);
+  }, [isEmployee]);
 
   const handleSubmit = async () => {
     if (!inputTitle.trim()) return;
