@@ -81,7 +81,6 @@ export default function AdminPage() {
       const response = await axiosInstance.get('/employees/get-employees');
 
       const result: ApiResponse<Employee[]> = response.data;
-      // console.log('api results: ', result);
 
       const employeesWithStatus = result.data.map((emp) => ({
         id: emp.user.id,
@@ -101,11 +100,37 @@ export default function AdminPage() {
     }
   };
 
+  const fetchTasks = async () => {
+    try {
+      const response = await axiosInstance.get('/tasks/get-tasks');
+
+      const result: ApiResponse<Task[]> = response.data;
+      // console.log('api get tasks results: ', result);
+
+      const tasksWithStatus = result.data.map((tak) => ({
+        id: tak.id,
+        title: tak.title,
+        assignee: tak.assignee,
+        status: tak.status,
+        dueDate: tak.dueDate,
+      }));
+
+      setTasks(tasksWithStatus);
+      setError(null);
+    } catch (error) {
+      console.error('Fetch tasks error:', error);
+      setError('Connection error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!isAdmin) {
       redirect('/');
     }
     fetchEmployees();
+    fetchTasks();
   }, [isAdmin]);
 
   const menuItems = [
@@ -124,7 +149,6 @@ export default function AdminPage() {
     }
   };
 
-  // api not ready
   const handleTaskCreated = (newTask: Task) => {
     setTasks((prev) => [...prev, newTask]);
 
@@ -141,7 +165,7 @@ export default function AdminPage() {
     );
   };
 
-  const handleDelete = async (userId: number) => {
+  const handleDeleteEmployee = async (userId: number) => {
     try {
       const response = await axiosInstance.delete(
         `/employees/delete-employee/${userId}`,
@@ -153,6 +177,21 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('Error deleting employee:', error);
+    }
+  };
+
+  const handleDeleteTask = async (taskId: number) => {
+    try {
+      const response = await axiosInstance.delete(
+        `/tasks/delete-task/${taskId}`,
+      );
+
+      if (response) {
+        fetchTasks();
+        toast.success('Task deleted successfully!');
+      }
+    } catch (error) {
+      console.error('Error deleting task:', error);
     }
   };
 
@@ -228,7 +267,7 @@ export default function AdminPage() {
                           variant="outline"
                           size="sm"
                           className="text-red-600"
-                          onClick={() => handleDelete(employee.id)}
+                          onClick={() => handleDeleteEmployee(employee.id)}
                         >
                           <Trash2 size={14} className="mr-1" />
                           Delete
@@ -312,6 +351,7 @@ export default function AdminPage() {
                           variant="outline"
                           size="sm"
                           className="text-red-600"
+                          onClick={() => handleDeleteTask(task.id)}
                         >
                           <Trash2 size={14} className="mr-1" />
                           Delete
