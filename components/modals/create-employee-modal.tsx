@@ -72,11 +72,8 @@ export default function CreateEmployeeModal({
         phoneNumber: '',
         emailAddress: '',
       });
-      onOpenChange(false);
 
-      toast.success(
-        `Employee ${newEmployee.username} created successfully! Login credentials have been sent to ${newEmployee.email}`,
-      );
+      onOpenChange(false);
     } catch (error) {
       console.error('Create employee error:', error);
       toast.error('Connection error. Please try again.');

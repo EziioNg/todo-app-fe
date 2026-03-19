@@ -95,7 +95,7 @@ export default function Login() {
                         </span>
                       </span>
                       <span className="text-muted-foreground">
-                        Password: Aa@123456
+                        Password: Aa@123
                       </span>
                     </span>
 
@@ -107,7 +107,7 @@ export default function Login() {
                         </span>
                       </span>
                       <span className="text-muted-foreground">
-                        Password: Aa@123456
+                        Password: Aa@123
                       </span>
                     </span>
                   </span>
