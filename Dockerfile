@@ -16,6 +16,7 @@ RUN npm ci
 COPY . .
 
 # Build app
+RUN rm -rf .next
 RUN npm run build
 
 
