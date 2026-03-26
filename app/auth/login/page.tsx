@@ -50,8 +50,8 @@ export default function Login() {
       } else {
         router.replace('/employee/todo');
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
+      toast.error('Cannot connect to server');
     }
   };
 

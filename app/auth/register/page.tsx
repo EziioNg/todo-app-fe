@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { TitleAuth } from '@/components/ui/title-auth';
+import axiosInstance from '@/lib/axios';
 
 export default function Register() {
   const [userValue, setUserValue] = useState('');
@@ -50,26 +51,12 @@ export default function Register() {
     }
 
     try {
-      // const result = await fetch('https://api.todo.eziio.site/auth/register', {
-      const result = await fetch('http://localhost:3305/auth/register', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(registerData),
-      });
+      const result = await axiosInstance.post('/auth/register', registerData);
 
-      const data = await result.json();
-
-      if (!result.ok) {
-        toast.error(data.message || 'Something went wrong');
-        return;
-      }
+      const data = result.data;
       toast.success(data.message || 'Register successful');
       router.replace('/');
-    } catch (error) {
-      console.log('error: ', error);
+    } catch {
       toast.error('Cannot connect to server');
     }
   };

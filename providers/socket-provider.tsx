@@ -12,6 +12,7 @@ import { io, Socket } from 'socket.io-client';
 import { useAuth } from '@/providers/auth-provider';
 import { toast } from 'sonner';
 import axiosInstance from '@/lib/axios';
+import { API_ROOT } from '@/utils/constants';
 
 interface Message {
   conversationId: number;
@@ -150,7 +151,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     if (!user) return;
 
     // Initialize socket connection
-    const newSocket = io('http://localhost:3305', {
+    const newSocket = io(API_ROOT, {
       withCredentials: true,
     });
 
