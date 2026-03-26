@@ -266,7 +266,7 @@ export default function AdminPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-red-600"
+                          className="text-red-600 cursor-pointer"
                           onClick={() => handleDeleteEmployee(employee.id)}
                         >
                           <Trash2 size={14} className="mr-1" />
@@ -293,13 +293,16 @@ export default function AdminPage() {
 
             <div className="flex gap-4 mb-6">
               <Button
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 cursor-pointer"
                 onClick={() => setIsCreateTaskModalOpen(true)}
               >
                 <Plus size={16} />
                 Create Task
               </Button>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 cursor-pointer"
+              >
                 <Search size={16} />
                 Filter
               </Button>
@@ -342,7 +345,7 @@ export default function AdminPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-blue-600"
+                          className="text-blue-600 cursor-pointer"
                         >
                           <Edit size={14} className="mr-1" />
                           Edit
@@ -350,7 +353,7 @@ export default function AdminPage() {
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-red-600"
+                          className="text-red-600 cursor-pointer"
                           onClick={() => handleDeleteTask(task.id)}
                         >
                           <Trash2 size={14} className="mr-1" />
@@ -389,7 +392,7 @@ export default function AdminPage() {
                 variant="outline"
                 size="sm"
                 onClick={handleLogout}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 cursor-pointer"
               >
                 <LogOut size={14} />
                 Logout
@@ -407,7 +410,7 @@ export default function AdminPage() {
                     <button
                       key={item.id}
                       onClick={() => setActiveSection(item.id as AdminSection)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg text-left cursor-pointer transition-colors ${
                         activeSection === item.id
                           ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
                           : 'text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800'

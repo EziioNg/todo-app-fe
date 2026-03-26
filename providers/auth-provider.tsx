@@ -10,7 +10,7 @@ import {
 import axiosInstance from '@/lib/axios';
 
 type User = {
-  id: string;
+  id: number;
   email: string;
   username?: string;
   role?: string;

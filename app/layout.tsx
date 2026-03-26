@@ -2,6 +2,7 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/providers/auth-provider';
+import { SocketProvider } from '@/providers/socket-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import ParticleBackground from '@/components/particle-background';
@@ -23,7 +24,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ParticleBackground />
             <div className="relative z-10 min-h-screen">
               <AuthProvider>
-                <Suspense>{children}</Suspense>
+                <SocketProvider>
+                  <Suspense>{children}</Suspense>
+                </SocketProvider>
               </AuthProvider>
             </div>
           </ThemeProvider>

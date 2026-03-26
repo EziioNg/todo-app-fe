@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { motion, Reorder } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { toast } from 'sonner';
 import { redirect, useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
@@ -15,7 +15,6 @@ import {
   LogOut,
   Calendar,
   AlertCircle,
-  User,
 } from 'lucide-react';
 import axiosInstance from '@/lib/axios';
 
@@ -392,6 +391,14 @@ export default function UserTodoPage() {
     }
   };
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null; // hoặc skeleton
+
   return (
     <div className="flex min-h-screen h-screen items-center justify-center font-sans transition-colors duration-300">
       <main className="flex flex-col overflow-y-auto h-full max-h-150 w-full max-w-6xl bg-white dark:bg-zinc-900 rounded-4xl shadow-sm dark:shadow-black/40 border border-zinc-200 dark:border-zinc-800">
@@ -436,7 +443,7 @@ export default function UserTodoPage() {
           </div>
 
           {/* Main Content */}
-          {renderContent()}
+          {mounted && renderContent()}
         </div>
       </main>
     </div>

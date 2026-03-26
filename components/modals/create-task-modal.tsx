@@ -153,7 +153,7 @@ export default function CreateTaskModal({
       setErrors({});
 
       onOpenChange(false);
-    } catch (error) {
+    } catch {
       toast.error('Failed to create task. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -311,13 +311,14 @@ export default function CreateTaskModal({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isSubmitting}
+                className="cursor-pointer"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isSubmitting || employees.length === 0}
-                className="min-w-[120px]"
+                className="min-w-30 cursor-pointer"
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
