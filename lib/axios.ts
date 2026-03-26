@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios';
 
-import { API_ROOT } from '@/utils/constants';
 import { toast } from 'sonner';
 
 const axiosInstance = axios.create({
-  baseURL: API_ROOT,
+  baseURL: process.env.NEXT_PUBLIC_API_ROOT,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
