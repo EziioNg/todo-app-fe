@@ -4,7 +4,7 @@ import axios, { AxiosError } from 'axios';
 import { API_ROOT } from '@/utils/constants';
 import { toast } from 'sonner';
 
-const apiInstance = axios.create({
+const axiosInstance = axios.create({
   baseURL: API_ROOT,
   withCredentials: true,
   headers: {
@@ -14,7 +14,7 @@ const apiInstance = axios.create({
 });
 
 // Request interceptor to add auth token to headers
-apiInstance.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config) => {
     // console.log(`🚀 API Request: ${config.method?.toUpperCase()} ${config.url}`,);
     return config;
@@ -24,7 +24,7 @@ apiInstance.interceptors.request.use(
   },
 );
 
-apiInstance.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) => response,
   async (error: AxiosError<any>) => {
     const originalRequest: any = error.config;
@@ -53,8 +53,8 @@ apiInstance.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        await apiInstance.put('/auth/refresh_token');
-        return apiInstance(originalRequest);
+        await axiosInstance.put('/auth/refresh_token');
+        return axiosInstance(originalRequest);
       } catch (err) {
         window.location.href = '/auth/login';
         return Promise.reject(err);
@@ -67,4 +67,4 @@ apiInstance.interceptors.response.use(
   },
 );
 
-export default apiInstance;
+export default axiosInstance;
