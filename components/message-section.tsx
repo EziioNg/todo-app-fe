@@ -52,7 +52,9 @@ export default function MessageSection({
 
   // Filter conversations based on search
   const filteredConversations = conversations.filter((conv) =>
-    conv.participant.username.toLowerCase().includes(searchQuery.toLowerCase()),
+    conv.participant?.username
+      ?.toLowerCase()
+      .includes(searchQuery?.toLowerCase() || ''),
   );
 
   const formatTime = (timestamp: string) => {
