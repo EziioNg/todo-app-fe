@@ -31,12 +31,12 @@ interface MessageSectionProps {
     email: string;
     status: string;
   }>;
-  admin: Admin | null;
+  admin?: Admin | null;
 }
 
 export default function MessageSection({
   employees = [],
-  admin,
+  admin = null,
 }: MessageSectionProps) {
   const { user, isAdmin } = useAuth();
 
