@@ -51,7 +51,7 @@ interface LastMessage {
 
 interface Conversation {
   id: number;
-  participant: Participant; // Single participant object
+  participant: Participant;
   createdAt: string;
   updatedAt: string;
   lastMessage?: LastMessage;
