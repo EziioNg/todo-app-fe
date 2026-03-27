@@ -15,6 +15,15 @@ import {
 import { useSocket } from '@/providers/socket-provider';
 import { useAuth } from '@/providers/auth-provider';
 
+interface Admin {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface MessageSectionProps {
   employees?: Array<{
     id: number;
@@ -22,12 +31,15 @@ interface MessageSectionProps {
     email: string;
     status: string;
   }>;
+  admin: Admin | null;
 }
 
 export default function MessageSection({
   employees = [],
+  admin,
 }: MessageSectionProps) {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
+
   const {
     isConnected,
     conversations,
@@ -43,6 +55,7 @@ export default function MessageSection({
   const [searchQuery, setSearchQuery] = useState('');
   const [showNewChatModal, setShowNewChatModal] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState('');
+  const [selectedAdmin, setSelectedAdmin] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when new messages arrive
@@ -89,7 +102,7 @@ export default function MessageSection({
     setMessageInput('');
   };
 
-  const handleCreateConversation = () => {
+  const handleCreateConversationWithEmployee = () => {
     if (!selectedEmployee) return;
 
     const employee = employees.find((emp) => emp.username === selectedEmployee);
@@ -99,6 +112,17 @@ export default function MessageSection({
       setSelectedEmployee('');
 
       // Success will be handled by socket provider when conversation_created event is received
+    }
+  };
+
+  const handleCreateConversationWithAdmin = () => {
+    if (!selectedAdmin) return;
+
+    const userAdmin = admin;
+    if (userAdmin) {
+      createNewConversation(userAdmin.id, userAdmin.username);
+      setShowNewChatModal(false);
+      setSelectedAdmin('');
     }
   };
 
@@ -319,54 +343,82 @@ export default function MessageSection({
       </div>
 
       {/* New Conversation Modal */}
-      {showNewChatModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-md mx-4 border border-zinc-200 dark:border-zinc-800">
-            <div className="p-6">
-              <h3 className="text-lg font-semibold mb-4">
-                Start New Conversation
-              </h3>
+      {showNewChatModal &&
+        (() => {
+          return (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+              <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-md mx-4 border border-zinc-200 dark:border-zinc-800">
+                <div className="p-6">
+                  <h3 className="text-lg font-semibold mb-4">
+                    Start New Conversation
+                  </h3>
 
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="employee">Select Employee</Label>
-                  <select
-                    id="employee"
-                    className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
-                    value={selectedEmployee}
-                    onChange={(e) => setSelectedEmployee(e.target.value)}
-                  >
-                    <option value="">Select an employee</option>
-                    {employees.map((employee) => (
-                      <option key={employee.id} value={employee.username}>
-                        {employee.username} ({employee.email})
-                      </option>
-                    ))}
-                  </select>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="user">
+                        {isAdmin ? 'Select Employee' : 'Select Admin'}
+                      </Label>
+
+                      <select
+                        id="user"
+                        className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                        value={isAdmin ? selectedEmployee : selectedAdmin}
+                        onChange={(e) => {
+                          if (isAdmin) {
+                            setSelectedEmployee(e.target.value);
+                          } else {
+                            setSelectedAdmin(e.target.value);
+                          }
+                        }}
+                      >
+                        <option value="">
+                          {isAdmin ? 'Select an employee' : 'Select admin'}
+                        </option>
+
+                        {isAdmin &&
+                          employees.map((employee) => (
+                            <option key={employee.id} value={employee.username}>
+                              {employee.username} ({employee.email})
+                            </option>
+                          ))}
+
+                        {!isAdmin && admin && (
+                          <option value={admin.username}>
+                            {admin.username} ({admin.email})
+                          </option>
+                        )}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end gap-3 pt-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setShowNewChatModal(false);
+                        setSelectedEmployee('');
+                        setSelectedAdmin('');
+                      }}
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button
+                      onClick={
+                        isAdmin
+                          ? handleCreateConversationWithEmployee
+                          : handleCreateConversationWithAdmin
+                      }
+                      disabled={isAdmin ? !selectedEmployee : !selectedAdmin}
+                    >
+                      Start Chat
+                    </Button>
+                  </div>
                 </div>
               </div>
-
-              <div className="flex justify-end gap-3 pt-4">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setShowNewChatModal(false);
-                    setSelectedEmployee('');
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={handleCreateConversation}
-                  disabled={!selectedEmployee}
-                >
-                  Start Chat
-                </Button>
-              </div>
             </div>
-          </div>
-        </div>
-      )}
+          );
+        })()}
     </div>
   );
 }

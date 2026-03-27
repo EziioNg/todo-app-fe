@@ -66,7 +66,7 @@ interface SocketContextType {
   joinConversation: (conversationId: number) => void;
   leaveConversation: () => void;
   sendMessage: (content: string) => void;
-  createNewConversation: (employeeId: number, employeeName: string) => void;
+  createNewConversation: (userId: number, userName: string) => void;
 }
 
 const SocketContext = createContext<SocketContextType | null>(null);
@@ -249,13 +249,13 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     socket.emit('send_message', message);
   };
 
-  const createNewConversation = (employeeId: number, employeeName: string) => {
+  const createNewConversation = (userId: number, userName: string) => {
     if (!socket) return;
 
-    console.log('Creating new conversation with:', employeeName);
+    console.log('Creating new conversation with:', userName);
     socket.emit('create_conversation', {
-      employeeId,
-      employeeName,
+      userId,
+      userName,
     });
   };
 

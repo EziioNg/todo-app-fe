@@ -28,6 +28,21 @@ type Task = {
   createdAt: string;
 };
 
+interface Admin {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ApiResponse<T> {
+  statusCode: number;
+  message: string;
+  data: T;
+}
+
 type UserSection = 'todos' | 'messages';
 
 export default function UserTodoPage() {
@@ -39,6 +54,7 @@ export default function UserTodoPage() {
   const [editingValue, setEditingValue] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [admin, setAdmin] = useState<Admin | null>(null);
 
   const fetchAssignedTasks = async () => {
     try {
@@ -58,11 +74,30 @@ export default function UserTodoPage() {
     }
   };
 
+  const fetchAdmin = async () => {
+    try {
+      const response = await axiosInstance.get('/employees/get-admin');
+
+      const result: ApiResponse<Admin> = response.data;
+
+      const admin = result.data;
+      console.log('admin received: ', admin);
+      setAdmin(admin);
+      setError(null);
+    } catch (error) {
+      console.error('Fetch employees error:', error);
+      setError('Connection error. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!isEmployee) {
       redirect('/');
     }
     fetchAssignedTasks();
+    fetchAdmin();
   }, [isEmployee]);
 
   const handleStatusUpdate = async (
@@ -382,7 +417,7 @@ export default function UserTodoPage() {
       case 'messages':
         return (
           <div className="flex-1">
-            <MessageSection employees={[]} />
+            <MessageSection admin={admin} />
           </div>
         );
 
@@ -397,7 +432,7 @@ export default function UserTodoPage() {
     setMounted(true);
   }, []);
 
-  if (!mounted) return null; // hoặc skeleton
+  if (!mounted) return null;
 
   return (
     <div className="flex min-h-screen h-screen items-center justify-center font-sans transition-colors duration-300">

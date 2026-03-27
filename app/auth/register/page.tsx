@@ -55,6 +55,7 @@ export default function Register() {
 
       const data = result.data;
       toast.success(data.message || 'Register successful');
+      toast.success(`Verification sent to ${data.data.email}`);
       router.replace('/');
     } catch {
       toast.error('Cannot connect to server');
