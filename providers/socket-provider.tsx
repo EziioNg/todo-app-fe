@@ -38,6 +38,7 @@ interface Participant {
   id: number;
   username: string;
   email: string;
+  deletedAt: boolean;
 }
 
 interface LastMessage {
@@ -91,8 +92,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     try {
       const response = await axiosInstance.get('/chat/conversations');
       setConversations(response.data.data || []);
-    } catch (error) {
-      console.error('Failed to fetch conversations:', error);
+    } catch {
+      // console.error('Failed to fetch conversations:', error);
       toast.error('Failed to load conversations');
     }
   };
@@ -103,22 +104,22 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         `/chat/messages/${conversationId}`,
       );
       setMessages(response.data.data || []);
-      console.log('message after fetching: ', messages);
-    } catch (error) {
-      console.error('Failed to fetch messages:', error);
+      // console.log('message after fetching: ', messages);
+    } catch {
+      // console.error('Failed to fetch messages:', error);
       toast.error('Failed to load messages');
     }
   };
 
   const socketRef = useRef<Socket | null>(null);
   const joinConversation = (conversationId: number) => {
-    console.log('socketRef id from joinConversation:', socketRef.current?.id);
+    // console.log('socketRef id from joinConversation:', socketRef.current?.id);
 
     const s = socketRef.current;
     if (!s) return;
-    console.log('socketRef current from joinConversation:', s);
+    // console.log('socketRef current from joinConversation:', s);
 
-    console.log('Joining conversation:', conversationId);
+    // console.log('Joining conversation:', conversationId);
 
     s.emit('join_conversation', { conversationId });
 
@@ -137,7 +138,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     if (!socket) return;
 
     if (currentConversation) {
-      console.log('Leaving conversation:', currentConversation.id);
+      // console.log('Leaving conversation:', currentConversation.id);
       socket.emit('leave_conversation', {
         conversationId: currentConversation.id,
       });
@@ -156,34 +157,34 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     });
 
     newSocket.on('connect', () => {
-      console.log('Socket connected');
+      // console.log('Socket connected');
       setIsConnected(true);
       socketRef.current = newSocket;
       setSocket(newSocket);
-      console.log('newSocket: ', newSocket);
+      // console.log('newSocket: ', newSocket);
 
       // Fetch conversations when socket connects
       fetchConversations();
     });
 
     newSocket.on('disconnect', () => {
-      console.log('Socket disconnected');
+      // console.log('Socket disconnected');
       setIsConnected(false);
       setSocket(null);
     });
 
     newSocket.on('conversations_list', (data: Conversation[]) => {
-      console.log('Received conversations:', data);
+      // console.log('Received conversations:', data);
       setConversations(data);
     });
 
     newSocket.on('conversation_messages', (data: NewMessage[]) => {
-      console.log('Received messages:', data);
+      // console.log('Received messages:', data);
       setMessages(data);
     });
 
     newSocket.on('new_message', (message: NewMessage) => {
-      console.log('New message received:', message);
+      // console.log('New message received:', message);
       setMessages((prev) => [...prev, message]);
 
       // Update conversation list with new message
@@ -208,12 +209,12 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     });
 
     newSocket.on('new_conversation', (conversation: Conversation) => {
-      console.log('New conversation:', conversation);
+      // console.log('New conversation:', conversation);
       setConversations((prev) => [conversation, ...prev]);
     });
 
     newSocket.on('conversation_created', (response: { id: number }) => {
-      console.log('Conversation created response:', response);
+      // console.log('Conversation created response:', response);
 
       fetchConversations();
 
@@ -245,14 +246,14 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       type: 'text',
     };
 
-    console.log('Sending message:', message);
+    // console.log('Sending message:', message);
     socket.emit('send_message', message);
   };
 
   const createNewConversation = (userId: number, userName: string) => {
     if (!socket) return;
 
-    console.log('Creating new conversation with:', userName);
+    // console.log('Creating new conversation with:', userName);
     socket.emit('create_conversation', {
       userId,
       userName,
