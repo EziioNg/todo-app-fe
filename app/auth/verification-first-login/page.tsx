@@ -59,7 +59,10 @@ export default function VerificationPage() {
         const axiosError = error as any;
         const errorMessage =
           axiosError.response?.data?.message || axiosError.message || '';
-        if (errorMessage.includes('already verified!')) {
+        if (
+          errorMessage.includes('already verified!') ||
+          errorMessage.includes('already set!')
+        ) {
           setVerificationStatus('already_verified');
           setErrorMessage(
             'Your account has already been verified. You can proceed to login.',

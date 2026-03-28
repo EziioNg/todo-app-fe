@@ -65,8 +65,8 @@ export default function UserTodoPage() {
       const response = await axiosInstance.get('/tasks/get-my-tasks');
 
       setTaskList(response.data.data || []);
-    } catch (error) {
-      console.error('Fetch tasks failed:', error);
+    } catch {
+      // console.error('Fetch tasks failed:', error);
       setError('Failed to load assigned tasks. Please try again.');
       toast.error('Failed to load tasks');
     } finally {
@@ -81,11 +81,11 @@ export default function UserTodoPage() {
       const result: ApiResponse<Admin> = response.data;
 
       const admin = result.data;
-      console.log('admin received: ', admin);
+      // console.log('admin received: ', admin);
       setAdmin(admin);
       setError(null);
-    } catch (error) {
-      console.error('Fetch employees error:', error);
+    } catch {
+      // console.error('Fetch employees error:', error);
       setError('Connection error. Please try again.');
     } finally {
       setIsLoading(false);
@@ -129,7 +129,7 @@ export default function UserTodoPage() {
       };
 
       toast.success(statusMessages[newStatus]);
-    } catch (error) {
+    } catch {
       // Revert on error
       setTaskList((prev) =>
         prev.map((task) =>
@@ -138,7 +138,7 @@ export default function UserTodoPage() {
             : task,
         ),
       );
-      console.error('Update task status failed:', error);
+      // console.error('Update task status failed:', error);
       toast.error('Failed to update task status');
     }
   };
@@ -167,7 +167,7 @@ export default function UserTodoPage() {
       setEditingId(null);
       setEditingValue('');
       toast.success('Task updated successfully');
-    } catch (error) {
+    } catch {
       // Revert on error
       setTaskList((prev) =>
         prev.map((task) =>
@@ -176,7 +176,7 @@ export default function UserTodoPage() {
             : task,
         ),
       );
-      console.error('Update task failed:', error);
+      // console.error('Update task failed:', error);
       toast.error('Failed to update task');
     }
   };

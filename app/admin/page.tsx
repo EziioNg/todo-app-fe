@@ -41,6 +41,7 @@ interface User {
   id: number;
   username: string;
   email: string;
+  isFirstLogin: boolean;
 }
 
 interface Employee {
@@ -60,8 +61,10 @@ interface ApiResponse<T> {
 interface Task {
   id: number;
   title: string;
+  description: string;
   assignee: string;
   status: 'pending' | 'in-progress' | 'completed';
+  priority: 'low' | 'medium' | 'high';
   dueDate: string;
 }
 
@@ -70,6 +73,13 @@ export default function AdminPage() {
   const [activeSection, setActiveSection] = useState<AdminSection>('users');
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isCreateTaskModalOpen, setIsCreateTaskModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [employeeToDelete, setEmployeeToDelete] =
+    useState<EmployeeClient | null>(null);
+  const [isDeleteTaskModalOpen, setIsDeleteTaskModalOpen] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  const [isEditTaskModalOpen, setIsEditTaskModalOpen] = useState(false);
+  const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [employees, setEmployees] = useState<EmployeeClient[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -86,7 +96,7 @@ export default function AdminPage() {
         id: emp.user.id,
         username: emp.user.username,
         email: emp.user.email,
-        status: 'active',
+        status: emp.user.isFirstLogin ? 'inactive' : 'active',
       }));
       // console.log('employees with status: ', employeesWithStatus);
 
@@ -107,15 +117,17 @@ export default function AdminPage() {
       const result: ApiResponse<Task[]> = response.data;
       // console.log('api get tasks results: ', result);
 
-      const tasksWithStatus = result.data.map((tak) => ({
+      const tasksReceived = result.data.map((tak) => ({
         id: tak.id,
         title: tak.title,
+        description: tak.description,
         assignee: tak.assignee,
         status: tak.status,
+        priority: tak.priority,
         dueDate: tak.dueDate,
       }));
 
-      setTasks(tasksWithStatus);
+      setTasks(tasksReceived);
       setError(null);
     } catch (error) {
       console.error('Fetch tasks error:', error);
@@ -180,6 +192,23 @@ export default function AdminPage() {
     }
   };
 
+  const openDeleteModal = (employee: EmployeeClient) => {
+    setEmployeeToDelete(employee);
+    setIsDeleteModalOpen(true);
+  };
+
+  const closeDeleteModal = () => {
+    setEmployeeToDelete(null);
+    setIsDeleteModalOpen(false);
+  };
+
+  const confirmDeleteEmployee = async () => {
+    if (employeeToDelete) {
+      await handleDeleteEmployee(employeeToDelete.id);
+      closeDeleteModal();
+    }
+  };
+
   const handleDeleteTask = async (taskId: number) => {
     try {
       const response = await axiosInstance.delete(
@@ -192,6 +221,50 @@ export default function AdminPage() {
       }
     } catch (error) {
       console.error('Error deleting task:', error);
+    }
+  };
+
+  const openDeleteTaskModal = (task: Task) => {
+    setTaskToDelete(task);
+    setIsDeleteTaskModalOpen(true);
+  };
+
+  const closeDeleteTaskModal = () => {
+    setTaskToDelete(null);
+    setIsDeleteTaskModalOpen(false);
+  };
+
+  const confirmDeleteTask = async () => {
+    if (taskToDelete) {
+      await handleDeleteTask(taskToDelete.id);
+      closeDeleteTaskModal();
+    }
+  };
+
+  const openEditTaskModal = (task: Task) => {
+    setTaskToEdit(task);
+    setIsEditTaskModalOpen(true);
+  };
+
+  const closeEditTaskModal = () => {
+    setTaskToEdit(null);
+    setIsEditTaskModalOpen(false);
+  };
+
+  const handleEditTask = async (updatedTask: Task) => {
+    try {
+      const response = await axiosInstance.put(
+        `/tasks/update-task-desc/${updatedTask.id}`,
+        updatedTask,
+      );
+
+      if (response) {
+        fetchTasks();
+        toast.success('Task updated successfully!');
+        closeEditTaskModal();
+      }
+    } catch {
+      toast.error('Failed to update task');
     }
   };
 
@@ -255,19 +328,11 @@ export default function AdminPage() {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        {/* <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-blue-600"
-                        >
-                          <Edit size={14} className="mr-1" />
-                          Edit
-                        </Button> */}
                         <Button
                           variant="outline"
                           size="sm"
                           className="text-red-600 cursor-pointer"
-                          onClick={() => handleDeleteEmployee(employee.id)}
+                          onClick={() => openDeleteModal(employee)}
                         >
                           <Trash2 size={14} className="mr-1" />
                           Delete
@@ -346,6 +411,7 @@ export default function AdminPage() {
                           variant="outline"
                           size="sm"
                           className="text-blue-600 cursor-pointer"
+                          onClick={() => openEditTaskModal(task)}
                         >
                           <Edit size={14} className="mr-1" />
                           Edit
@@ -354,7 +420,7 @@ export default function AdminPage() {
                           variant="outline"
                           size="sm"
                           className="text-red-600 cursor-pointer"
-                          onClick={() => handleDeleteTask(task.id)}
+                          onClick={() => openDeleteTaskModal(task)}
                         >
                           <Trash2 size={14} className="mr-1" />
                           Delete
@@ -444,6 +510,209 @@ export default function AdminPage() {
         onTaskCreated={handleTaskCreated}
         employees={employees}
       />
+
+      {/* Delete Employee Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-md mx-4 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                  <Trash2 className="w-5 h-5 text-red-600 dark:text-red-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Delete Employee</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    This action cannot be undone
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <p className="text-zinc-700 dark:text-zinc-300 mb-2">
+                  Are you sure you want to delete this employee?
+                </p>
+                {employeeToDelete && (
+                  <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-3 border border-zinc-200 dark:border-zinc-700">
+                    <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                      {employeeToDelete.username}
+                    </p>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      {employeeToDelete.email}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={closeDeleteModal}
+                  className="text-zinc-700 dark:text-zinc-300"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={confirmDeleteEmployee}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Employee
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Task Confirmation Modal */}
+      {isDeleteTaskModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-md mx-4 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                  <Trash2 className="w-5 h-5 text-red-600 dark:text-red-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Delete Task</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    This action cannot be undone
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <p className="text-zinc-700 dark:text-zinc-300 mb-2">
+                  Are you sure you want to delete this task?
+                </p>
+                {taskToDelete && (
+                  <div className="bg-zinc-50 dark:bg-zinc-800 rounded-lg p-3 border border-zinc-200 dark:border-zinc-700">
+                    <p className="font-medium text-zinc-900 dark:text-zinc-100">
+                      {taskToDelete.title}
+                    </p>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                      Assigned to: {taskToDelete.assignee}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={closeDeleteTaskModal}
+                  className="text-zinc-700 dark:text-zinc-300"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={confirmDeleteTask}
+                  className="bg-red-600 hover:bg-red-700"
+                >
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Task
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Task Modal */}
+      {isEditTaskModalOpen && taskToEdit && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl w-full max-w-md mx-4 border border-zinc-200 dark:border-zinc-800">
+            <div className="p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center">
+                  <Edit className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold">Edit Task</h3>
+                  <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                    Update task details
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    Task Title
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                    value={taskToEdit.title}
+                    onChange={(e) =>
+                      setTaskToEdit({ ...taskToEdit, title: e.target.value })
+                    }
+                    placeholder="Enter task title"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    Task Description
+                  </label>
+                  <textarea
+                    className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                    value={taskToEdit.description || ''}
+                    onChange={(e) =>
+                      setTaskToEdit({
+                        ...taskToEdit,
+                        description: e.target.value,
+                      })
+                    }
+                    placeholder="Enter task description"
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                    Priority
+                  </label>
+                  <select
+                    className="w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100"
+                    value={taskToEdit.priority || 'medium'}
+                    onChange={(e) =>
+                      setTaskToEdit({
+                        ...taskToEdit,
+                        priority: e.target.value as 'low' | 'medium' | 'high',
+                      })
+                    }
+                  >
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <Button
+                  variant="outline"
+                  onClick={closeEditTaskModal}
+                  className="text-zinc-700 dark:text-zinc-300"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => handleEditTask(taskToEdit)}
+                  className="bg-blue-600 hover:bg-blue-700"
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Update Task
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

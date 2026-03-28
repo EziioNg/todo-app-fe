@@ -12,8 +12,17 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/auth/login', request.url));
   }
 
+  const AUTH_WHITELIST = [
+    '/auth/verification-first-login',
+    '/auth/update-password',
+    '/auth/verification-admin',
+  ];
   const isAuthRoute = pathname.startsWith('/auth');
-  if (isAuthRoute && token) {
+
+  const isWhitelisted = AUTH_WHITELIST.some((route) =>
+    pathname.startsWith(route),
+  );
+  if (isAuthRoute && token && !isWhitelisted) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
