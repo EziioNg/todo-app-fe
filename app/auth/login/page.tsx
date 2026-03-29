@@ -101,7 +101,7 @@ export default function Login() {
 
                     <span className="flex items-center justify-between">
                       <span className="flex items-center gap-2">
-                        Employee1
+                        Ren
                         <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] text-blue-600">
                           Employee
                         </span>
